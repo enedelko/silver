@@ -3,6 +3,10 @@
 const https=require('https');
 const fs = require('fs');
 
+function logErr(err) {
+  console.error("Error: " + err.message);                                         
+}
+
 function loadImage(url, path) {
   if (!fs.existsSync(path)) {
     https.get(url, (resp) => {
@@ -27,15 +31,11 @@ function loadImage(url, path) {
           ws.on('ready', () => {
             console.log('saving ' + url + ' to ' + path);
             ws.end(Buffer.concat(data));
-          })
-          .on("error", (err) => {                                                       
-            console.log("Error: " + err.message);                                         
-          })                                                                                
+          });
+          ws.on("error", logErr) 
         });
     })
-    .on("error", (err) => {                                                       
-      console.log("Error: " + err.message);                                         
-    })
+    .on("error", logErr)
   }
 }
 
@@ -67,9 +67,7 @@ function loadMonth(dataId) {
         })
       });
   })
-  .on("error", (err) => {                                                       
-    console.log("Error: " + err.message);                                         
-  })                                                                                
+  .on("error", logErr)                                                                                
 }
 
 function loadYear(year) {
@@ -95,12 +93,10 @@ function loadYear(year) {
         data.match(/data-id=\".*?\"/gi).forEach( (m) => {                               
           loadMonth(m.replace(/data-id=\"(.*?)\"/, '$1'))
         });                                                                         
-      });                                                                           
+      });
     }
   )
-  .on("error", (err) => {                                                       
-    console.log("Error: " + err.message);                                         
-  })                                                                                
+  .on("error", logErr)                                                                                
 }
 loadYear(2017)
 loadYear(2018)
