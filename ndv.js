@@ -1,3 +1,4 @@
+/* jshint esversion:6,node:true */
 'use strict';
 
 const https = require('https');
@@ -31,12 +32,12 @@ function loadImage(url, path) {
             })
             .on("error", (err) => {
               console.log("Error: " + err.message);
-            })
+            });
         });
       })
       .on("error", (err) => {
         console.log("Error: " + err.message);
-      })
+      });
   }
 }
 
@@ -53,12 +54,13 @@ const monthMap = {
   "октября": "10",
   "ноября": "11",
   "декабря": "12"
-}
+};
 
 
 function loadMonth(month) {
   let i = 1;
   month.slides.forEach((slide) => {
+    //console.log(i, slide);
 
     const url = slide.src.replace(/\/crop.*00\//i, '/');
     const folder = slide.title.split(' ').map((s) => monthMap.hasOwnProperty(s) ? monthMap[s] : s).reverse().join('-') + '/';
@@ -69,7 +71,8 @@ function loadMonth(month) {
     });
     loadImage(url, `${folder}${file}`);
 
-  })
+    i++;
+  });
 }
 
 function loadGalleries(maxGalleries) {
@@ -92,14 +95,14 @@ function loadGalleries(maxGalleries) {
         // The whole response has been received. Print out the result.                
         resp.on('end', () => {
           JSON.parse(data).data.forEach((m) => {
-            loadMonth(m)
+            loadMonth(m);
           });
         });
       }
     )
     .on("error", (err) => {
       console.log("Error: " + err.message);
-    })
+    });
 }
 
 loadGalleries(40)
